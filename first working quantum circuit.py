@@ -1,10 +1,14 @@
-from qiskit import QuantumCircuit,Aer,execute
-my_circuit = QuantumCircuit(1,1)
-my_circuit.h(0)
-my_circuit.measure(0,0)
-quantum_simulator = Aer.get_backend("qasm_simulator")
-simulation_job = execute(my_circuit, quantum_simulator, shots=1000)
-simulation_result = simulation_job.result()
-counts = simulation_result.get_counts(my_circuit)
-print("Measurement outcomes from my first quantum circuit:")
-print(counts)
+from qiskit import Aer, QuantumCircuit, execute
+
+# basic 1-qubit test
+c = QuantumCircuit(1, 1)
+c.h(0)
+c.measure(0, 0)
+
+# sim
+sim = Aer.get_backend("qasm_simulator")
+res = execute(c, sim, shots=1000).result()
+counts = res.get_counts()
+
+print("outcomes ->", counts)
+
