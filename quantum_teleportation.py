@@ -1,0 +1,13 @@
+from qiskit import QuantumCircuit, Aer, execute
+qc=QuantumCircuit(3,3)
+qc.h(1)
+qc.cx(1,2)
+qc.cx(0,1)
+qc.h(0)
+qc.measure([0,1],[0,1])
+qc.cx(1,2)
+qc.cz(0,2)
+qc.measure(2,2)
+sim=Aer.get_backend("qasm_simulator")
+res=execute(qc,sim,shots=512).result()
+print(res.get_counts())
