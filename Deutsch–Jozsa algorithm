@@ -1,36 +1,31 @@
-from qiskit import QuantumCircuit, Aer, execute
+from qiskit import QuantumCircuit,Aer,execute
 import numpy as np
-def dj_oracle(case, n):
-    oracle_qc = QuantumCircuit(n+1)
-    if case == "balanced":
-        b = np.random.randint(1, 2**n)
-        b_str = format(b, '0'+str(n)+'b')
-        for i, bit in enumerate(b_str):
-            if bit == '1':
-                oracle_qc.x(i)
-        for i in range(n):
-            oracle_qc.cx(i, n)
-        for i, bit in enumerate(b_str):
-            if bit == '1':
-                oracle_qc.x(i)
-    else:  # constant
-        output = np.random.randint(2)
-        if output == 1:
-            oracle_qc.x(n)
-    oracle_gate = oracle_qc.to_gate()
-    oracle_gate.name = "Oracle"
-    return oracle_gate
-def dj_algorithm(oracle, n):
-    dj = QuantumCircuit(n+1, n)
-    dj.x(n)
-    dj.h(range(n+1))
-    dj.append(oracle, range(n+1))
-    dj.h(range(n))
-    dj.measure(range(n), range(n))
-    return dj
-n = 3
-oracle_gate = dj_oracle('balanced', n)
-dj_circ = dj_algorithm(oracle_gate, n)
-backend = Aer.get_backend('qasm_simulator')
-counts = execute(dj_circ, backend, shots=1).result().get_counts()
-print(counts)
+def o(c,n):
+ q=QuantumCircuit(n+1)
+ if c=="b":
+  b=np.random.randint(1,2**n)
+  s=format(b,'0'+str(n)+'b')
+  for i,v in enumerate(s):
+   if v=='1':q.x(i)
+  for i in range(n):q.cx(i,n)
+  for i,v in enumerate(s):
+   if v=='1':q.x(i)
+ else:
+  if np.random.randint(2)==1:q.x(n)
+ g=q.to_gate()
+ g.name="O"
+ return g
+def a(g,n):
+ d=QuantumCircuit(n+1,n)
+ d.x(n)
+ d.h(range(n+1))
+ d.append(g,range(n+1))
+ d.h(range(n))
+ d.measure(range(n),range(n))
+ return d
+n=3
+g=o('b',n)
+c=a(g,n)
+b=Aer.get_backend('qasm_simulator')
+r=execute(c,b,shots=1).result().get_counts()
+print(r)
